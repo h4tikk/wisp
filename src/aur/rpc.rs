@@ -36,4 +36,25 @@ pub enum SeatchBy {
     NameDesc,
 }
 
-impl SeatchBy {}
+impl SeatchBy {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SeatchBy::Name => "name",
+            SeatchBy::NameDesc => "name-desc",
+        }
+    }
+}
+
+pub struct AurClient {
+    client: request::Client,
+}
+
+impl AurClient {
+    pub fn new() -> Result<Self> {
+        let client = request::Client::builder()
+            .user_agent("wisp/0.1.0 (https://github.com/h4tikk/wisp")
+            .build()?;
+
+        Ok(Self { client })
+    }
+}
