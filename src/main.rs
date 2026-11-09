@@ -1,3 +1,4 @@
+mod aur;
 mod args;
 mod state;
 fn main() {

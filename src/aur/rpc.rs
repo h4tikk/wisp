@@ -46,15 +46,39 @@ impl SeatchBy {
 }
 
 pub struct AurClient {
-    client: request::Client,
+    client: reqwest::Client,
 }
 
 impl AurClient {
     pub fn new() -> Result<Self> {
-        let client = request::Client::builder()
+        let client = reqwest::Client::builder()
             .user_agent("wisp/0.1.0 (https://github.com/h4tikk/wisp")
             .build()?;
 
         Ok(Self { client })
+    }
+
+    pub async fn search(&self, query: &str, by: SeatchBy) -> Result<Vec<AurPackage>> {
+        let url = format!(
+            "{}search?by={}&arg{}",
+            AUR_RPC,
+            by.as_str(),
+            urlencoding::encode(query)
+        );
+
+        let resp: RpcResponse = self.client.get(&url).send().await?.json().await?;
+
+        Ok(resp.results)
+    }
+
+    pub async fn info(&self, names: &[&str]) -> Result<Vec<AurPackage>> {
+        let mut url = format!("{}info?", AUR_RPC);
+        for name in names {
+            url.push_str(&format!("arg[]={}&", urlencoding::encode(name)));
+        }
+
+        let resp: RpcResponse = self.client.get(&url).send().await?.json().await?;
+
+        Ok(resp.results)
     }
 }
