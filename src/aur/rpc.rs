@@ -31,16 +31,16 @@ struct RpcResponse {
 }
 
 #[derive(Clone, Copy)]
-pub enum SeatchBy {
+pub enum SearchBy {
     Name,
     NameDesc,
 }
 
-impl SeatchBy {
+impl SearchBy {
     fn as_str(&self) -> &'static str {
         match self {
-            SeatchBy::Name => "name",
-            SeatchBy::NameDesc => "name-desc",
+            SearchBy::Name => "name",
+            SearchBy::NameDesc => "name-desc",
         }
     }
 }
@@ -58,7 +58,7 @@ impl AurClient {
         Ok(Self { client })
     }
 
-    pub async fn search(&self, query: &str, by: SeatchBy) -> Result<Vec<AurPackage>> {
+    pub async fn search(&self, query: &str, by: SearchBy) -> Result<Vec<AurPackage>> {
         let url = format!(
             "{}search?by={}&arg{}",
             AUR_RPC,
